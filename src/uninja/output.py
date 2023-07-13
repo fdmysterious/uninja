@@ -37,7 +37,7 @@ def add_deps( ss, ruleset, dep ):
 
         ss[ dep.name ] = (dep, depnames)
 
-def ninja( fhandle, target_list ):
+def build_file( fhandle, target_list ):
     if not isinstance( target_list, list ):
         raise TypeError("Must be list of targets")
 
@@ -58,15 +58,7 @@ def ninja( fhandle, target_list ):
 
     # Step 3 # Printing targets
     for rr, dnames in ss.values():
-        #print( "build {name} : {rule} {depnames}".format(
-        #    name     = str( rr ),
-        #    rule     = rr.rule,
-        #    depnames = dnames
-        #), file=fhandle )
-        #print( rr.gen_rule( rr, str(rr), rr.rule, dnames ), file=fhandle )
         print( "build {name} : {rule} {deps}".format( name = rr.gen_name(rr), rule = rr.rule, deps = dnames),file=fhandle)
         for k, v in rr.vars.items():
             print( "    {} = {}".format(k,v), file=fhandle)
-        #for aa in rr.aliases:
-        #    print( "build {alias} : phony {name}".format( alias =aa, name = str(rr) ), file=fhandle )
         print("",file=fhandle)
