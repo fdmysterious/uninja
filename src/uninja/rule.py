@@ -15,8 +15,8 @@ from typing      import Optional
 class Rule:
     name: str
     command: str
-    description: Optional[str] = ""
-    depfile: Optional[str] = None
+    description: Optional[str] = None
+    depfile: Optional[str]     = None
 
     # deps argument not supported yet
     # msvc_deps_prefix not supported yet
@@ -27,3 +27,8 @@ class Rule:
 
     def __str__(self):
         return self.name
+
+@dataclass(eq=True, frozen=True)
+class Phony(Rule):
+    name:        str = "phony"
+    command:     str = ""

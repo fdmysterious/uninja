@@ -9,6 +9,7 @@
 """
 
 from .target import Target
+from .rule   import Phony
 
 def add_deps( ss, ruleset, dep ):
     """
@@ -48,12 +49,13 @@ def build_file( fhandle, target_list ):
 
     # Step 2 # Print rules
     for rule in ruleset:
-        print(f"rule {rule.name}", file=fhandle)
-        print(f"    command = {rule.command}", file=fhandle)
-        if rule.description is not None: print(f"    description = {rule.description}", file=fhandle)
-        if rule.depfile     is not None: print(f"    depfile     = {rule.depfile}"    , file=fhandle)
-        print("", file=fhandle)
-
+        # The phony rule is not added to the output file
+        if not isinstance(rule, Phony):
+            print(f"rule {rule.name}", file=fhandle)
+            print(f"    command = {rule.command}", file=fhandle)
+            if rule.description is not None: print(f"    description = {rule.description}", file=fhandle)
+            if rule.depfile     is not None: print(f"    depfile     = {rule.depfile}"    , file=fhandle)
+            print("", file=fhandle)
 
 
     # Step 3 # Printing targets

@@ -17,10 +17,7 @@ At its lowest level, you can generate a simple build file for a C hello world ap
 as follows:
 
 ```python
-from uninja.rule   import Rule
-from uninja.target import Target
-
-from uninja        import output
+import uninja
 
 from pathlib       import Path
 
@@ -28,13 +25,13 @@ from pathlib       import Path
 #################################
 # Rules defintion
 #################################
-CC = Rule(
+CC = uninja.Rule(
     name        = "cc",
     description = "Building object $in",
     command     = "gcc -fdiagnostics-color=always -MMD -MF $out.d -c $in -o $out",
 )
 
-LD = Rule(
+LD = uninja.Rule(
     name        = "ld",
     description = "Linking $out",
     command     = f"gcc -o $out $in"
@@ -55,7 +52,7 @@ def obj(x):
 
     print(f" -- Add object target {dep_path}")
 
-    return Target(
+    return uninja.Target(
         name = f"obj/{dep_path}.o",
         rule = CC,
         deps = [dep_path]
@@ -66,7 +63,7 @@ def exe(name, srcs):
 
     objs = [obj(src) for src in srcs]
 
-    return Target(
+    return uninja.Target(
         name = f"bin/{name}",
         rule = LD,
         deps = objs
@@ -88,7 +85,7 @@ main_exe = exe(
 #################################
 Path("build").mkdir(exist_ok=True)
 with open("build/build.ninja", "w") as fhandle:
-    output.ninja(fhandle, [main_exe])
+    uninja.output(fhandle, [main_exe])
 ```
 
 The following script can be ran:

@@ -12,5 +12,5 @@ uNinja: minimal build toolkit around the ninja build system
 ##########################################
 
 from .target import Target
-from .rule   import Rule
+from .rule   import Rule, Phony
 from .output import build_file as output
