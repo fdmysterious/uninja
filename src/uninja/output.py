@@ -1,15 +1,19 @@
 """
-######################
-# Output ninja rules #
-######################
+=========================
+Output tree to ninja file
+=========================
+:Authors: - Florian Dupeyron <florian.dupeyron@mugcat.fr>
+:Date: July 2023 
 
-  Florian Dupeyron (floolfy)
-  September 2018
-
+original code from September 2018
 """
+
+import logging
 
 from .target import Target
 from .rule   import Phony
+
+log = logging.getLogger("uninja.output")
 
 def add_deps( ss, ruleset, dep ):
     """
@@ -33,19 +37,22 @@ def add_deps( ss, ruleset, dep ):
 
         depnames = ""
         for ch in dep.deps :
+            if isinstance(ch, frozenset):
+                raise ValueError(f"Unexpected frozenset in target dependencies. Please check your generated targets. Dependencies: {dep.deps}")
+
             depnames += str(ch) + " "
             add_deps( ss, ruleset, ch )
 
         ss[ dep.name ] = (dep, depnames)
 
-def build_file( fhandle, target_list ):
-    if not isinstance( target_list, list ):
-        raise TypeError("Must be list of targets")
+def build_file( fhandle, target_set):
+    if not isinstance( target_set, frozenset ):
+        raise TypeError("Must be frozen set of targets")
 
     # Step 1 # Constructing set of targets
     ss      = dict()
     ruleset = set()
-    for tt in target_list : add_deps( ss, ruleset, tt )
+    for tt in target_set: add_deps( ss, ruleset, tt )
 
     # Step 2 # Print rules
     for rule in ruleset:
@@ -61,6 +68,9 @@ def build_file( fhandle, target_list ):
     # Step 3 # Printing targets
     for rr, dnames in ss.values():
         print( "build {name} : {rule} {deps}".format( name = rr.gen_name(rr), rule = rr.rule, deps = dnames),file=fhandle)
-        for k, v in rr.vars.items():
-            print( "    {} = {}".format(k,v), file=fhandle)
+        # FIXME # Restore vars output
+        #for k, v in rr.vars.items():
+        #    print( "    {} = {}".format(k,v), file=fhandle)
         print("",file=fhandle)
+
+    log.info(f"Output written to {getattr(fhandle, 'name')}")

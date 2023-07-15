@@ -11,7 +11,7 @@ original source code from  September 2018
 
 from dataclasses import dataclass, field
 import re
-from typing import Set, Optional, Dict, Callable
+from typing import Set, Optional, Dict, Callable, FrozenSet
 
 from .rule import Rule
 
@@ -23,11 +23,14 @@ log = logging.getLogger("target")
 class Target:
     name: str
     rule: Rule
-    deps: Set["Target"] = field(default_factory=set)
-    vars: Optional[Dict[str, any]] = field(default_factory=dict)
+    deps: FrozenSet["Target"] = field(default_factory=frozenset)
+    #vars: Optional[Dict[str, any]] = field(default_factory=dict) # FIXME
 
     # FIXME # Really useful?
     gen_name: Optional[Callable[[str], str]] = lambda x: x
 
     def __str__(self):
         return self.name
+
+    def is_phony(self):
+        return isinstance(self.rule, Phony)
