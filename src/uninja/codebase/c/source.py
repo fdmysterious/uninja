@@ -26,5 +26,5 @@ class Source:
     path: Path
     lang: SourceLang
 
-    incdirs_local: Optional[FrozenSet[Path]]  = field(default=frozenset) # List of include directories
-    incdirs_system: Optional[FrozenSet[Path]] = field(default=frozenset) # List of system include directories
+    incdirs_local: Optional[FrozenSet[Path]]  = field(default_factory=frozenset) # List of include directories
+    incdirs_system: Optional[FrozenSet[Path]] = field(default_factory=frozenset) # List of system include directories
