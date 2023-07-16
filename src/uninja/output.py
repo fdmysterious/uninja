@@ -35,15 +35,13 @@ def add_deps( ss, ruleset, dep ):
         #########################################
         # TODO # More explicit var names
 
-        depnames = ""
+        depnames = []
         for ch in dep.deps :
-            if isinstance(ch, frozenset):
-                raise ValueError(f"Unexpected frozenset in target dependencies. Please check your generated targets. Dependencies: {dep.deps}")
-
-            depnames += str(ch) + " "
+            if not str(ch) in depnames:
+                depnames.append(str(ch))
             add_deps( ss, ruleset, ch )
 
-        ss[ dep.name ] = (dep, depnames)
+        ss[ dep.name ] = (dep, " ".join(depnames))
 
 def build_file( fhandle, target_set):
     #if not isinstance( target_set, frozenset ):
@@ -64,6 +62,8 @@ def build_file( fhandle, target_set):
             if rule.depfile     is not None: print(f"    depfile     = {rule.depfile}"    , file=fhandle)
             print("", file=fhandle)
 
+
+    compilation_database = []
 
     # Step 3 # Printing targets
     for rr, dnames in ss.values():
