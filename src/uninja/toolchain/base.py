@@ -10,6 +10,8 @@ Base classes to define a toolchain
 
 import logging
 
+from pathlib     import Path
+
 from dataclasses import dataclass, field
 from typing      import Dict, Tuple, Type, Callable, FrozenSet
 
@@ -18,6 +20,12 @@ from ..          import Target, Rule
 
 @dataclass
 class Toolchain:
+    # Root project dir
+    root_dir: Path
+
+    # Build dir
+    build_dir: Path
+
     # The processors toolchain takes an input argument corresponding to a node graph
     # containing the specialized item node (a C source, or COmponent for example). It
     # returns the resulting set of generated Targets and Rules.
@@ -25,6 +33,7 @@ class Toolchain:
 
     # User settings that can be used by processor functions
     settings: Dict[str, any] = field(default_factory=dict)
+
     
     def __post_init__(self):
         self.log = logging.getLogger(f"toolchain")
