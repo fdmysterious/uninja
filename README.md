@@ -18,7 +18,32 @@ uNinja aims the following objectives:
 - Can run on a vanilla python installation (no pip dependency);
 - Minimal sources, so that it can be copied directly in the target project;
 
-# Give me an example?
+# Where is this tool used
+
+Like `cmake`, `meson`, _etc._, this tool is used to configure the build:
+
+![Building tools model](doc/img/tools_diagram.png)
+
+
+# Modelisation
+
+## Levels of modelling
+
+In order to be flexible, uninja relies on two levels of representation:
+
+![Levels of representation](doc/img/model.png)
+
+1. The first level is the **Codebase model**. It represents a high level
+   description of what should be built. For example, a C program has sources,
+   components, static libraries, executables, etc.
+
+2. The second level is the **Build model**. It's an arrangment of *targets* in a dependency
+   graph, with each targtet having an associated *rule* describing how the output file from
+   that target is built. This is the representation of what is in a `ninja` build file.
+
+## Give me examples?
+
+### Build model
 
 At its lowest level, you can generate a simple build file for a C hello world application
 as follows:
