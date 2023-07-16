@@ -72,4 +72,4 @@ def build_file( fhandle, target_set):
             print(f"    {v.key} = {v.value}", file=fhandle)
         print("",file=fhandle)
 
-    log.info(f"Output written to {getattr(fhandle, 'name')}")
+    log.info(f"-> Output written to {getattr(fhandle, 'name')}")
