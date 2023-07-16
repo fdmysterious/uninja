@@ -22,6 +22,9 @@ class Toolchain:
     # containing the specialized item node (a C source, or COmponent for example). It
     # returns the resulting set of generated Targets and Rules.
     processors: Dict[Type,Callable[["Toolchain", any], Tuple[Target]]] = field(default_factory=dict)
+
+    # User settings that can be used by processor functions
+    settings: Dict[str, any] = field(default_factory=dict)
     
     def __post_init__(self):
         self.log = logging.getLogger(f"toolchain")
