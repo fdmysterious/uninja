@@ -6,10 +6,12 @@ Represents a source file in the C toolset representation
 :Date: July 2023
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib     import Path
 
 from enum import Enum
+
+from typing import FrozenSet, Optional
 
 class SourceLang(Enum):
     C   = "c",
@@ -23,3 +25,6 @@ class Source:
     """
     path: Path
     lang: SourceLang
+
+    incdirs_local: Optional[FrozenSet[Path]]  = field(default=frozenset) # List of include directories
+    incdirs_system: Optional[FrozenSet[Path]] = field(default=frozenset) # List of system include directories

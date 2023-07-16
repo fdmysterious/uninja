@@ -23,10 +23,10 @@ def add_deps( ss, ruleset, dep ):
     tree walk.
     """
     if isinstance( dep, Target ):
-        if ( dep.name in ss ) and not ( dep is ss[dep.name][0] ):
-            print( repr(dep) )
-            print( repr(ss[dep.name] ) )
-            raise RuntimeError( "Duplicate entry : " + dep.name )
+        #if ( dep.name in ss ) and not ( dep is ss[dep.name][0] ):
+        #    print( repr(dep) )
+        #    print( repr(ss[dep.name] ) )
+        #    raise RuntimeError( "Duplicate entry : " + dep.name )
 
         # Add rule in ruleset (only if needed)
         ruleset.add(dep.rule)
@@ -46,8 +46,8 @@ def add_deps( ss, ruleset, dep ):
         ss[ dep.name ] = (dep, depnames)
 
 def build_file( fhandle, target_set):
-    if not isinstance( target_set, frozenset ):
-        raise TypeError("Must be frozen set of targets")
+    #if not isinstance( target_set, frozenset ):
+    #    raise TypeError("Must be frozen set of targets")
 
     # Step 1 # Constructing set of targets
     ss      = dict()
@@ -67,10 +67,9 @@ def build_file( fhandle, target_set):
 
     # Step 3 # Printing targets
     for rr, dnames in ss.values():
-        print( "build {name} : {rule} {deps}".format( name = rr.gen_name(rr), rule = rr.rule, deps = dnames),file=fhandle)
-        # FIXME # Restore vars output
-        #for k, v in rr.vars.items():
-        #    print( "    {} = {}".format(k,v), file=fhandle)
+        print( "build {name} : {rule} {deps}".format( name = rr.name, rule = rr.rule, deps = dnames),file=fhandle)
+        for v in rr.vars.values:
+            print(f"    {v.key} = {v.value}", file=fhandle)
         print("",file=fhandle)
 
     log.info(f"Output written to {getattr(fhandle, 'name')}")

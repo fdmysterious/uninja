@@ -21,13 +21,13 @@ class Toolchain:
     # The processors toolchain takes an input argument corresponding to a node graph
     # containing the specialized item node (a C source, or COmponent for example). It
     # returns the resulting set of generated Targets and Rules.
-    processors: Dict[Type,Callable[["Toolchain", any], FrozenSet[Target]]] = field(default_factory=dict)
+    processors: Dict[Type,Callable[["Toolchain", any], Tuple[Target]]] = field(default_factory=dict)
     
     def __post_init__(self):
         self.log = logging.getLogger(f"toolchain")
 
 
-    def process(self, x: any) -> Tuple[FrozenSet[Target], FrozenSet[Rule]]:
+    def process(self, x: any) -> Tuple[Target]:
         processor = self.processors.get(type(x), None)
 
         if processor is None:
@@ -36,7 +36,7 @@ class Toolchain:
         return processor(self, x)
 
 
-    def processor_register(self, x: Type, processor: Callable[["Toolchain", any], FrozenSet[Target]]):
+    def processor_register(self, x: Type, processor: Callable[["Toolchain", any], Tuple[Target]]):
         if x in self.processors:
             raise KeyError(f"Processor already register for type {x}")
         self.processors[x] = processor
