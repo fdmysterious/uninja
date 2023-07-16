@@ -1,0 +1,8 @@
+gen:
+    python3 buildconf.py
+
+check: gen
+    cd build && ninja -f check.ninja
+
+build: check
+    cd build && ninja
