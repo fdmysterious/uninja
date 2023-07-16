@@ -11,6 +11,13 @@ uNinja is a simple build system toolkit structured around [ninja](https://ninja-
 Its goal is to give the user some simple helpers to generate ninja build files, using a convenient modular
 structure, and the python language for flexible configuration.
 
+# Objectives
+
+uNinja aims the following objectives:
+
+- Can run on a vanilla python installation (no pip dependency);
+- Minimal sources, so that it can be copied directly in the target project;
+
 # Give me an example?
 
 At its lowest level, you can generate a simple build file for a C hello world application
