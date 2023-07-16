@@ -238,12 +238,12 @@ def gcc_process_executable(tools: Toolchain, exe: Executable):
 # Check Toolchain definition
 ######################################
 
-check_toolchain = Toolchain()
+check_toolchain = Toolchain(root_dir=Path.cwd(), build_dir=Path("build").resolve())
 check_toolchain.processor_register(Source,     check_process_source    )
 check_toolchain.processor_register(Component,  check_process_component )
 check_toolchain.processor_register(Executable, check_process_executable)
 
-gcc_toolchain = Toolchain()
+gcc_toolchain = Toolchain(root_dir=Path.cwd(), build_dir=Path("build").resolve())
 gcc_toolchain.processor_register  (Source,     gcc_process_source       )
 gcc_toolchain.processor_register  (Component,  gcc_process_component    )
 gcc_toolchain.processor_register  (Executable, gcc_process_executable   )
@@ -313,8 +313,8 @@ targets_build = Target(
 )
 
 Path("build").mkdir(exist_ok=True)
-with open("build/check.ninja", "w") as fhandle:
+with open(check_toolchain.build_dir / "check.ninja", "w") as fhandle:
     uninja.output(fhandle, frozenset({target_check_all}))
 
-with open("build/build.ninja", "w") as fhandle:
+with open(gcc_toolchain.build_dir / "build.ninja", "w") as fhandle:
     uninja.output(fhandle, (targets_build,))
