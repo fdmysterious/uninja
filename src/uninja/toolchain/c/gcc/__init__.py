@@ -36,7 +36,7 @@ class ToolchainGCC:
         self.rule_cc = Rule(
             name        = f"cc-{self.variant or 'gcc'}",
             description = "Building $in...",
-            command     = f"{self.prefix}gcc -fdiagnostics-color=always -MMD -MF $out.d {' '.join(self.cflags)} $incdirs -c $in -o $out",
+            command     = f"{self.prefix}gcc -fdiagnostics-color=always -MMD -MF $out.d {' '.join(self.cflags)} $defines $incdirs -c $in -o $out",
             depfile     = "$out.d"
         )
 
@@ -66,14 +66,18 @@ class ToolchainGCC:
             rule = self.rule_cc,
             deps = (src.path.resolve(),),
 
+            # FIXME # No escaping for defines, can cause some bugs?
             vars = TargetVars.from_args(
                 incdirs = f"-iquote {src.path.parent.resolve()}" \
                     + "".join(map(lambda x: f" -iquote {x!s}", src.incdirs_local)) \
-                    + "".join(map(lambda x: f" -I {x!s}", src.incdirs_system))
+                    + "".join(map(lambda x: f" -I {x!s}", src.incdirs_system)),
+
+                defines = " ".join(map(lambda x: f"-D{x.name}" + (f"={x.value}" if x.value is not None else ""), src.defines))
             )
         )
 
         return (target,)
+
 
     def process_component(self, tools: Toolchain, comp: Component):
         tools.log.info(f"Add component: {comp.name}")

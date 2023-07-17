@@ -13,6 +13,8 @@ from enum import Enum
 
 from typing import FrozenSet, Optional
 
+from .define import Define
+
 class SourceLang(Enum):
     C   = "c",
     ASM = "asm"
@@ -28,3 +30,5 @@ class Source:
 
     incdirs_local: Optional[FrozenSet[Path]]  = field(default_factory=frozenset) # List of include directories
     incdirs_system: Optional[FrozenSet[Path]] = field(default_factory=frozenset) # List of system include directories
+
+    defines: FrozenSet[Define]                = field(default_factory=frozenset)
