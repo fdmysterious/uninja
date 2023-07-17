@@ -1,0 +1,14 @@
+# Generate build configuration
+gen:
+    python3 buildconf.py
+
+#check: gen
+#    cd build && ninja -f check.ninja
+
+# Build the goddamn app!
+build: gen
+    cd build && ninja
+
+# Generate the build dependency graph as seen by ninja
+build-graph: gen
+    cd build && ninja -t graph | dot -Tpdf -Grankdir=TB -o build_graph.pdf
