@@ -12,3 +12,10 @@ build: gen
 # Generate the build dependency graph as seen by ninja
 build-graph: gen
     cd build && ninja -t graph | dot -Tpdf -Grankdir=TB -o build_graph.pdf
+
+# Generate the build dependency graph as seen by ninja
+check-graph: gen
+    cd build && ninja -f check.ninja -t graph | dot -Tpdf -Grankdir=TB -o check_graph.pdf
+
+check: gen
+    cd build && ninja -f check.ninja

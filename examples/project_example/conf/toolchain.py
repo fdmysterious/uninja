@@ -7,10 +7,11 @@ Toolchain configuration for example project
 :Date: July 2023
 """
 
-from pathlib                import Path
+from pathlib                       import Path
 
-from uninja.toolchain.base  import Toolchain
-from uninja.toolchain.c.gcc import ToolchainGCC
+from uninja.toolchain.base         import Toolchain
+from uninja.toolchain.c.gcc        import ToolchainGCC
+from uninja.toolchain.c.clang_tidy import ToolchainClangTidy
 
 from uninja.codebase        import c as c_code
 
@@ -42,7 +43,15 @@ class CustomToolchain(ToolchainGCC):
         return super().process_source(tools, src)
 
 
-gcc = CustomToolchain()
+################################
+# Toolchain instanciation
+################################
 
-tools = Toolchain(root_dir=conf.dirs.project_dir, build_dir=conf.dirs.build_dir)
-gcc.associate_to(tools)
+tools_build = Toolchain(root_dir=conf.dirs.project_dir, build_dir=conf.dirs.build_dir)
+tools_check = Toolchain(root_dir=conf.dirs.project_dir, build_dir=conf.dirs.build_dir)
+
+gcc = CustomToolchain()
+gcc.associate_to(tools_build)
+
+ctidy       = ToolchainClangTidy()
+ctidy.associate_to(tools_check)

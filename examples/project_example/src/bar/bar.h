@@ -1,3 +1,3 @@
 #pragma once
 
-int bar(int a, int b);
+int bar(int param_a, int param_b);

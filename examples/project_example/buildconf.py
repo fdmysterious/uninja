@@ -18,7 +18,7 @@ log = logging.getLogger("project config")
 
 from functools      import reduce
 
-from conf.toolchain import tools
+from conf.toolchain import tools_build, tools_check
 from workspace      import export as main_targets
 
 
@@ -28,14 +28,22 @@ from workspace      import export as main_targets
 
 targets = reduce(
     lambda a,b: a+b,
-    map(tools.process, main_targets)
+    map(tools_build.process, main_targets)
+)
+
+targets_check = reduce(
+    lambda a,b: a+b,
+    map(tools_check.process, main_targets)
 )
 
 
 ################################
 # Save to output file
 ################################
-tools.build_dir.mkdir(exist_ok=True)
-
-with open(f"{tools.build_dir}/build.ninja", "w") as fhandle:
+tools_build.build_dir.mkdir(exist_ok=True)
+with open(f"{tools_build.build_dir}/build.ninja", "w") as fhandle:
     uninja.output(fhandle, targets)
+
+tools_check.build_dir.mkdir(exist_ok=True)
+with open(f"{tools_check.build_dir}/check.ninja", "w") as fhandle:
+    uninja.output(fhandle, targets_check)
