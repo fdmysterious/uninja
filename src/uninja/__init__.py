@@ -5,6 +5,8 @@ uNinja: minimal build toolkit around the ninja build system
 
 :Authors: - Florian Dupeyron <florian.dupeyron@mugcat.fr>
 :Date: July 2023
+
+See the LICENSE file for licensing info for this specific part
 """
 
 ##########################################
