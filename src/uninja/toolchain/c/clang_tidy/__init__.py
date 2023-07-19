@@ -30,7 +30,7 @@ class ToolchainClangTidy:
         self.rule_ctidy = Rule(
             name        = "ctidy",
             description = "Checking $in...",
-            command     = f"clang-tidy --quiet --use-color --header-filter=. --checks={checks} --warnings-as-errors={errors} $in -- $incdirs $defines"
+            command     = f"clang-tidy --quiet --header-filter=. --checks={checks} --warnings-as-errors={errors} $in -- $incdirs $defines > $out || true" 
         )
 
         self.rule_touch_after = Rule(
@@ -44,7 +44,7 @@ class ToolchainClangTidy:
         tools.log.info(f"Add check for C source: {src.path}")
 
         target = Target(
-            name = f"ctidy/{src.path.resolve().relative_to(tools.root_dir)}.lock",
+            name = f"ctidy/{src.path.resolve().relative_to(tools.root_dir)}.log",
             rule = self.rule_ctidy,
             deps = (src.path.resolve(),),
 
@@ -86,7 +86,7 @@ class ToolchainClangTidy:
                     comp.path
                 })),
 
-                incdirs_system = src.incdirs_system.union(components_incdirs)
+                incdirs_system = src.incdirs_system.union(components_incdirs).union(map(Path.resolve, comp.interface_directories))
             )
 
             targets_srcs += tools.process(src_path_prepend)

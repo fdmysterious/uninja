@@ -87,7 +87,7 @@ def add_component(
     name                    = str(name)
     path                    = Path(path)
 
-    interface_directories   = frozenset(interface_directories)
+    interface_directories   = frozenset(map(Path, interface_directories))
     components_dependencies = frozenset(components_dependencies)
 
     # Process sources
