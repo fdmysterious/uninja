@@ -16,8 +16,9 @@ from typing import FrozenSet, Optional
 from .define import Define
 
 class SourceLang(Enum):
-    C   = "c",
-    ASM = "asm"
+    C      = "c",
+    Header = "header",
+    ASM    = "asm"
 
 
 @dataclass(eq=True, frozen=True)

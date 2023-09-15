@@ -82,8 +82,10 @@ class ToolchainClangTidy:
                 path = comp.path / src.path,
                 lang = src.lang,
 
+                defines = src.defines.union(comp.defines),
+
                 incdirs_local = src.incdirs_local.union(frozenset({
-                    comp.path
+                    comp.path.resolve()
                 })),
 
                 incdirs_system = src.incdirs_system.union(components_incdirs).union(map(Path.resolve, comp.interface_directories))

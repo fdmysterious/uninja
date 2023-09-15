@@ -36,6 +36,7 @@ def add_source(
     """
     EXTENSIONS_DICT = {
         ".c":   SourceLang.C,
+        ".h":   SourceLang.Header,
         ".s":   SourceLang.ASM,
         ".asm": SourceLang.ASM
     }
@@ -78,6 +79,7 @@ def add_component(
     path: Path,
 
     srcs                    = {},
+    defines                 = {},
     interface_directories   = {},
     components_dependencies = {},
 
@@ -89,6 +91,7 @@ def add_component(
 
     interface_directories   = frozenset(map(Path, interface_directories))
     components_dependencies = frozenset(components_dependencies)
+    defines                 = frozenset(defines)
 
     # Process sources
     srcs = frozenset({
@@ -96,11 +99,24 @@ def add_component(
         for x in srcs
     })
 
+    # Process defines
+    def process_define(x):
+        if isinstance(x, str):
+            return Define(name=x)
+        elif isinstance(x, tuple):
+            return Define(name = x[0], value=x[1])
+        elif isinstance(x, Define):
+            return x
+        else:
+            raise TypeError(f"Unexpected type for define: {x} -> {type(x)}")
+    defines = frozenset(map(process_define, defines))
+
     # Create component object
     return node_type(
         name                    = name,
         path                    = path,
         srcs                    = srcs,
+        defines                 = defines,
         interface_directories   = interface_directories,
         components_dependencies = components_dependencies
     )
