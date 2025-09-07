@@ -9,11 +9,27 @@ original code from September 2018
 """
 
 import logging
+import re
+
+from pathlib import Path
 
 from .target import Target
 from .rule   import Phony
 
 log = logging.getLogger("uninja.output")
+
+_RE_WIN_PATH = re.compile(r"[A-Z][:]((?:[/\\][^/\\]*)+)")
+
+def _fpath(xx):
+    # FIXME # What to do when using files on another drive than C?
+    xx = str(xx)
+    mt = _RE_WIN_PATH.match(xx)
+
+    if mt:
+        return mt.group(1).replace("\\", "/")
+    else:
+        return xx
+
 
 def add_deps( ss, ruleset, dep ):
     """
@@ -38,7 +54,7 @@ def add_deps( ss, ruleset, dep ):
         depnames = []
         for ch in dep.deps :
             if not str(ch) in depnames:
-                depnames.append(str(ch))
+                depnames.append(_fpath(ch))
             add_deps( ss, ruleset, ch )
 
         ss[ dep.name ] = (dep, " ".join(depnames))
@@ -67,7 +83,7 @@ def build_file( fhandle, target_set):
 
     # Step 3 # Printing targets
     for rr, dnames in ss.values():
-        print( "build {name} : {rule} {deps}".format( name = rr.name, rule = rr.rule, deps = dnames),file=fhandle)
+        print( "build {name} : {rule} {deps}".format( name = _fpath(rr.name), rule = rr.rule, deps = dnames),file=fhandle)
         for v in rr.vars.values:
             print(f"    {v.key} = {v.value}", file=fhandle)
         print("",file=fhandle)
